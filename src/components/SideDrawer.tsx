@@ -10,11 +10,10 @@ import {
   Sun,
   Moon,
   LogOut,
-  Tag,
-  LayoutList,
-  MessageSquareHeart,
+  LogIn,
   ChevronRight,
   Check,
+  ShieldCheck,
 } from 'lucide-react';
 import {
   Sheet,
@@ -26,7 +25,8 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { POULTRY_TYPES, PoultryTypeId } from '@/types/poultry';
-import { PoultryBazarLogo } from './PoultryBazarHeader';
+import { SmartPoultryLogo } from './PoultryBazarHeader';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface SideDrawerProps {
   open: boolean;
@@ -36,14 +36,12 @@ interface SideDrawerProps {
   onOpenSetupWizard: () => void;
   onOpenDriveBackup: () => void;
   onOpenAiAssistant: () => void;
-  onOpenPostAd?: () => void;
-  onOpenMyAds?: () => void;
-  onOpenFeedback?: () => void;
   enabledTypes: PoultryTypeId[];
   activeType: PoultryTypeId;
   onSelectType: (t: PoultryTypeId) => void;
   isLoggedIn?: boolean;
   onSignOut: () => void;
+  onSignIn?: () => void;
   userMobile?: string;
 }
 
@@ -55,254 +53,260 @@ export function SideDrawer({
   onOpenSetupWizard,
   onOpenDriveBackup,
   onOpenAiAssistant,
-  onOpenPostAd,
-  onOpenMyAds,
-  onOpenFeedback,
   enabledTypes,
   activeType,
   onSelectType,
-  isLoggedIn = true,
+  isLoggedIn = false,
   onSignOut,
+  onSignIn,
   userMobile,
 }: SideDrawerProps) {
   const { language, setLanguage, t } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const { user } = useAuth();
 
-  const profileName = localStorage.getItem('user_profile_name') || 'Md Abdul Aziz';
-  const profileMobile = localStorage.getItem('user_profile_mobile') || userMobile || '+8801951530277';
+  // Determine real user display values
+  const storedName = localStorage.getItem('user_profile_name');
+  const realName = storedName || user?.user_metadata?.full_name || user?.user_metadata?.name || (user?.email ? user.email.split('@')[0] : '');
+  const realMobile = localStorage.getItem('user_profile_mobile') || userMobile || user?.phone || (user?.email?.includes('@poultry.app') ? user.email.replace('@poultry.app', '') : user?.email) || '';
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[300px] sm:w-[340px] p-0 flex flex-col bg-card">
-        {/* Drawer Header with Poultry BAZAR branding */}
+        {/* Drawer Header with Smart Poultry branding */}
         <SheetHeader className="p-4 bg-[#EBF3EC] dark:bg-muted/40 border-b border-border/50 text-left">
           <div className="flex items-center gap-2.5">
-            <PoultryBazarLogo className="w-9 h-9 shrink-0" />
+            <SmartPoultryLogo className="w-9 h-9 shrink-0" />
             <div className="flex flex-col leading-none">
               <div className="flex items-baseline tracking-tight font-black">
-                <span className="text-[#009933] dark:text-emerald-400 text-lg font-black tracking-tight">
+                <span className="text-emerald-600 dark:text-emerald-400 text-lg font-black tracking-tight">
+                  Smart
+                </span>
+                <span className="text-foreground text-lg font-black tracking-tight ml-1">
                   Poultry
                 </span>
-                <span className="text-[#EE0000] dark:text-red-500 text-lg font-black tracking-tight ml-1">
-                  BAZAR
-                </span>
               </div>
-              <span className="text-[10px] text-[#009933] dark:text-emerald-400 font-bold mt-0.5">
-                কিনুন, বেচুন, খুশি থাকুন
+              <span className="text-[10px] text-muted-foreground font-semibold mt-0.5">
+                স্মার্ট খামার ব্যবস্থাপনা
               </span>
             </div>
           </div>
+          <SheetTitle className="sr-only">স্মার্ট পোল্ট্রি প্রধান মেনু</SheetTitle>
         </SheetHeader>
 
-        {/* User Mini Profile Strip */}
-        <div
-          onClick={() => {
-            onOpenChange(false);
-            onOpenProfile();
-          }}
-          className="p-3.5 mx-3 mt-3 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-between gap-3 cursor-pointer transition-colors"
-        >
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-full bg-[#1E7E34] text-white flex items-center justify-center font-bold text-sm shrink-0">
-              👤
+        <div className="flex-1 overflow-y-auto p-4 space-y-5">
+          {/* User Profile / Login Card */}
+          {isLoggedIn ? (
+            <div
+              onClick={() => {
+                onOpenChange(false);
+                onOpenProfile();
+              }}
+              className="p-3 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-500/25 flex items-center justify-between gap-3 cursor-pointer hover:bg-emerald-100/60 dark:hover:bg-emerald-900/40 transition-colors"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-11 h-11 rounded-full bg-emerald-600 flex items-center justify-center text-white shrink-0 shadow-xs">
+                  <User className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="font-bold text-sm text-foreground truncate">
+                    {realName || 'খামারী প্রোফাইল'}
+                  </span>
+                  <span className="text-xs text-muted-foreground font-mono truncate">
+                    {realMobile || 'প্রোফাইল তথ্য দেখুন'}
+                  </span>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             </div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-sm font-bold text-foreground truncate">{profileName}</span>
-              <span className="text-xs text-muted-foreground font-mono truncate">{profileMobile}</span>
+          ) : (
+            <div className="p-3.5 rounded-2xl bg-muted/50 border border-border flex flex-col gap-2.5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center text-muted-foreground shrink-0">
+                  <User className="w-4 h-4" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold text-foreground">অতিথি খামারী</span>
+                  <span className="text-[11px] text-muted-foreground">ক্লাউড ব্যাকআপের জন্য লগইন করুন</span>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                onClick={() => {
+                  onOpenChange(false);
+                  if (onSignIn) onSignIn();
+                }}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-xs gap-1.5 h-8.5"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                লগইন / সাইনআপ করুন
+              </Button>
             </div>
-          </div>
-          <ChevronRight className="w-4 h-4 text-emerald-700 dark:text-emerald-300 shrink-0" />
-        </div>
+          )}
 
-        {/* Scrollable Navigation Items */}
-        <div className="flex-1 overflow-y-auto p-3 space-y-4">
-          {/* 1. Poultry Types Switcher */}
-          <div className="space-y-1">
-            <div className="px-2 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
-              আমার মুরগি (ধরন পরিবর্তন)
+          {/* Active Poultry Type Switcher */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                খামারের ধরন নির্বাচন
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  onOpenChange(false);
+                  onOpenPoultrySettings();
+                }}
+                className="h-6 px-1.5 text-xs text-emerald-600 hover:text-emerald-700 dark:text-emerald-400"
+              >
+                <Settings2 className="w-3 h-3 mr-1" />
+                কাস্টমাইজ
+              </Button>
             </div>
-            <div className="space-y-1">
-              {POULTRY_TYPES.filter((t) => enabledTypes.includes(t.id)).map((item) => {
-                const active = item.id === activeType;
+
+            <div className="grid grid-cols-1 gap-1.5">
+              {enabledTypes.map((typeId) => {
+                const info = POULTRY_TYPES[typeId];
+                if (!info) return null;
+                const isActive = activeType === typeId;
+
                 return (
                   <button
-                    key={item.id}
+                    key={typeId}
                     onClick={() => {
-                      onSelectType(item.id);
+                      onSelectType(typeId);
                       onOpenChange(false);
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
-                      active
-                        ? 'bg-primary text-primary-foreground font-bold shadow-2xs'
-                        : 'hover:bg-muted text-foreground'
+                    className={`w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-left transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-emerald-600 text-white font-semibold shadow-xs'
+                        : 'bg-muted/40 hover:bg-muted text-foreground border border-border/60'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <span className="text-lg">{item.emoji}</span>
-                      <span>{item.label}</span>
+                      <span className="text-lg">{info.icon}</span>
+                      <span className="text-sm">{info.nameBengali}</span>
                     </div>
-                    {active && <Check className="w-4 h-4" />}
+                    {isActive && <Check className="w-4 h-4 stroke-[2.5]" />}
                   </button>
                 );
               })}
             </div>
+          </div>
+
+          {/* Farm Setup & Tools */}
+          <div className="space-y-1">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block px-1 pb-1">
+              খামার ও সেবা
+            </span>
 
             <Button
               variant="ghost"
-              size="sm"
-              onClick={() => {
-                onOpenChange(false);
-                onOpenPoultrySettings();
-              }}
-              className="w-full justify-start text-xs text-muted-foreground hover:text-foreground gap-2 h-8 rounded-lg mt-1"
-            >
-              <Settings2 className="w-3.5 h-3.5" />
-              <span>মুরগির ধরন যোগ বা বন্ধ করুন</span>
-            </Button>
-          </div>
-
-          <div className="border-t border-border/50" />
-
-          {/* 2. Core Actions */}
-          <div className="space-y-1">
-            <div className="px-2 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
-              খামার ও বাজার সেবা
-            </div>
-
-            <button
               onClick={() => {
                 onOpenChange(false);
                 onOpenSetupWizard();
               }}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-muted text-foreground transition-colors cursor-pointer"
+              className="w-full justify-start gap-3 h-11 rounded-xl text-foreground hover:bg-muted"
             >
               <Sparkles className="w-4 h-4 text-amber-500" />
-              <span>খামার সেটআপ উইজার্ড</span>
-            </button>
+              <span className="text-sm font-medium">খামার সেটআপ উইজার্ড</span>
+            </Button>
 
-            {onOpenPostAd && (
-              <button
-                onClick={() => {
-                  onOpenChange(false);
-                  onOpenPostAd();
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-muted text-foreground transition-colors cursor-pointer"
-              >
-                <Tag className="w-4 h-4 text-emerald-600" />
-                <span>বিজ্ঞাপন দিন</span>
-              </button>
-            )}
-
-            {onOpenMyAds && (
-              <button
-                onClick={() => {
-                  onOpenChange(false);
-                  onOpenMyAds();
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-muted text-foreground transition-colors cursor-pointer"
-              >
-                <LayoutList className="w-4 h-4 text-primary" />
-                <span>আমার বিজ্ঞাপন</span>
-              </button>
-            )}
-
-            {onOpenFeedback && (
-              <button
-                onClick={() => {
-                  onOpenChange(false);
-                  onOpenFeedback();
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-muted text-foreground transition-colors cursor-pointer"
-              >
-                <MessageSquareHeart className="w-4 h-4 text-rose-500" />
-                <span>মতামত / ফিডব্যাক</span>
-              </button>
-            )}
-          </div>
-
-          <div className="border-t border-border/50" />
-
-          {/* 3. Utilities */}
-          <div className="space-y-1">
-            <div className="px-2 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
-              টুলস ও সেটিংস
-            </div>
-
-            <button
+            <Button
+              variant="ghost"
               onClick={() => {
                 onOpenChange(false);
                 onOpenDriveBackup();
               }}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-muted text-foreground transition-colors cursor-pointer"
+              className="w-full justify-start gap-3 h-11 rounded-xl text-foreground hover:bg-muted"
             >
               <Cloud className="w-4 h-4 text-sky-500" />
-              <span>Google Drive ব্যাকআপ</span>
-            </button>
+              <span className="text-sm font-medium">Google Drive ব্যাকআপ</span>
+            </Button>
 
-            <button
+            <Button
+              variant="ghost"
               onClick={() => {
                 onOpenChange(false);
                 onOpenAiAssistant();
               }}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-muted text-foreground transition-colors cursor-pointer"
+              className="w-full justify-start gap-3 h-11 rounded-xl text-foreground hover:bg-muted"
             >
               <Bot className="w-4 h-4 text-emerald-500" />
-              <span>স্মার্ট এআই সহকারী</span>
-            </button>
+              <span className="text-sm font-medium">স্মার্ট এআই সহকারী</span>
+            </Button>
+          </div>
+
+          {/* App Preferences */}
+          <div className="space-y-1">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block px-1 pb-1">
+              সেটিংস
+            </span>
 
             {/* Language Switch */}
-            <button
-              onClick={() => {
-                setLanguage(language === 'bn' ? 'en' : 'bn');
-              }}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-muted text-foreground transition-colors cursor-pointer"
-            >
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-muted/30 border border-border/50">
+              <div className="flex items-center gap-2.5 text-sm text-foreground">
                 <Globe className="w-4 h-4 text-indigo-500" />
                 <span>ভাষা (Language)</span>
               </div>
-              <span className="text-xs font-bold bg-muted px-2 py-0.5 rounded-md">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setLanguage(language === 'bn' ? 'en' : 'bn')}
+                className="h-7 px-2.5 text-xs rounded-lg font-semibold"
+              >
                 {language === 'bn' ? 'বাংলা' : 'English'}
-              </span>
-            </button>
+              </Button>
+            </div>
 
             {/* Theme Switch */}
-            <button
-              onClick={() => {
-                setTheme(theme === 'dark' ? 'light' : 'dark');
-              }}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-muted text-foreground transition-colors cursor-pointer"
-            >
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-muted/30 border border-border/50">
+              <div className="flex items-center gap-2.5 text-sm text-foreground">
                 {theme === 'dark' ? (
-                  <Moon className="w-4 h-4 text-amber-400" />
+                  <Moon className="w-4 h-4 text-purple-400" />
                 ) : (
                   <Sun className="w-4 h-4 text-amber-500" />
                 )}
                 <span>থিম (Theme)</span>
               </div>
-              <span className="text-xs font-bold bg-muted px-2 py-0.5 rounded-md">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="h-7 px-2.5 text-xs rounded-lg font-semibold"
+              >
                 {theme === 'dark' ? 'ডার্ক' : 'লাইট'}
-              </span>
-            </button>
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* Footer Logout */}
-        <div className="p-3 border-t border-border/60">
-          <Button
-            variant="ghost"
-            onClick={() => {
-              onOpenChange(false);
-              if (window.confirm('আপনি কি নিশ্চিত যে লগআউট করতে চান?')) {
+        {/* Drawer Bottom Actions */}
+        <div className="p-4 border-t border-border/60 bg-muted/10">
+          {isLoggedIn ? (
+            <Button
+              variant="outline"
+              onClick={() => {
+                onOpenChange(false);
                 onSignOut();
-              }
-            }}
-            className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-500/10 gap-2.5 rounded-xl font-semibold"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>লগআউট</span>
-          </Button>
+              }}
+              className="w-full text-red-600 hover:text-red-700 hover:bg-red-500/10 border-red-500/20 rounded-xl justify-center gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>লগআউট</span>
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                onOpenChange(false);
+                if (onSignIn) onSignIn();
+              }}
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl justify-center gap-2 font-semibold shadow-xs"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>লগইন করুন</span>
+            </Button>
+          )}
         </div>
       </SheetContent>
     </Sheet>

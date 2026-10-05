@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, User } from 'lucide-react';
+import { Menu, User, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface PoultryBazarHeaderProps {
@@ -9,7 +9,7 @@ interface PoultryBazarHeaderProps {
   isLoggedIn?: boolean;
 }
 
-export function PoultryBazarLogo({ className = "w-9 h-9" }: { className?: string }) {
+export function SmartPoultryLogo({ className = "w-9 h-9" }: { className?: string }) {
   return (
     <svg 
       className={`${className} shrink-0 drop-shadow-xs`} 
@@ -52,13 +52,6 @@ export function PoultryBazarLogo({ className = "w-9 h-9" }: { className?: string
         stroke="#64748B" 
         strokeWidth="2.2" 
       />
-      {/* Tail feathers hint */}
-      <path 
-        d="M74 36C80 32 86 35 88 40" 
-        stroke="#64748B" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-      />
       {/* Legs & Feet */}
       <path 
         d="M45 75L43 88M45 88L38 88M43 88L48 88M57 75L57 88M57 88L51 88M57 88L63 88" 
@@ -79,7 +72,7 @@ export function PoultryBazarHeader({
   return (
     <header className="w-full bg-card/95 backdrop-blur-md border-b border-border/60 py-2.5 px-3 sm:px-4 transition-colors">
       <div className="max-w-lg mx-auto flex items-center justify-between gap-2">
-        {/* Left: Hamburger Menu */}
+        {/* Left: Hamburger Menu (3 Lines) */}
         <Button
           variant="ghost"
           size="icon"
@@ -90,25 +83,30 @@ export function PoultryBazarHeader({
           <Menu className="w-6 h-6 text-foreground/90 stroke-[2.2]" />
         </Button>
 
-        {/* Center: Logo & Poultry BAZAR Branding */}
-        <div className="flex items-center gap-2 select-none min-w-0">
-          <PoultryBazarLogo className="w-9 h-9 sm:w-10 sm:h-10 shrink-0" />
-          <div className="flex flex-col leading-none min-w-0">
-            {/* Top Brand Name: Poultry (Green) + BAZAR (Red) */}
+        {/* Center: Smart Poultry Branding */}
+        <div 
+          onClick={onOpenProfile} 
+          className="flex items-center gap-2.5 select-none cursor-pointer group"
+          title="Smart Poultry - প্রোফাইল দেখুন"
+        >
+          <SmartPoultryLogo className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 group-hover:scale-105 transition-transform" />
+          <div className="flex flex-col leading-none">
+            {/* Brand Title: Smart (Emerald) + Poultry (Foreground) */}
             <div className="flex items-baseline tracking-tight font-black">
-              <span className="text-[#009933] dark:text-emerald-400 text-lg sm:text-[22px] font-black tracking-tight">
-                Poultry
+              <span className="text-emerald-600 dark:text-emerald-400 text-lg sm:text-[22px] font-black tracking-tight">
+                Smart
               </span>
-              <span className="text-[#EE0000] dark:text-red-500 text-lg sm:text-[22px] font-black tracking-tight ml-1">
-                BAZAR
+              <span className="text-foreground text-lg sm:text-[22px] font-black tracking-tight ml-1">
+                Poultry
               </span>
             </div>
 
-            {/* Subtitle Tagline: কিনুন,বেচুন,খুশি থাকুন */}
-            <div className="flex items-center text-[10px] sm:text-[11px] font-bold mt-0.5 tracking-tight">
-              <span className="text-[#EE0000] dark:text-red-400">কিনুন,</span>
-              <span className="text-[#009933] dark:text-emerald-400">বেচুন,</span>
-              <span className="text-[#009933] dark:text-emerald-400 ml-0.5">খুশি থাকুন</span>
+            {/* Subtitle Tagline: স্মার্ট খামার ব্যবস্থাপনা */}
+            <div className="text-[11px] font-medium text-muted-foreground mt-0.5 tracking-tight flex items-center gap-1">
+              <span>স্মার্ট খামার ব্যবস্থাপনা</span>
+              <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/10 px-1 py-0.2 rounded">
+                PRO
+              </span>
             </div>
           </div>
         </div>
@@ -118,7 +116,11 @@ export function PoultryBazarHeader({
           variant="ghost"
           size="icon"
           onClick={onOpenProfile}
-          className="w-10 h-10 rounded-full p-0.5 border-2 border-border/80 hover:border-emerald-500/60 bg-muted/30 hover:bg-muted shrink-0 transition-all cursor-pointer overflow-hidden shadow-2xs"
+          className={`w-10 h-10 rounded-full p-0.5 border-2 shrink-0 transition-all cursor-pointer overflow-hidden shadow-2xs ${
+            isLoggedIn 
+              ? 'border-emerald-600/80 bg-emerald-50/50 dark:bg-emerald-950/30' 
+              : 'border-border/80 hover:border-emerald-500/60 bg-muted/30'
+          }`}
           aria-label="প্রোফাইল খুলুন"
         >
           {avatarUrl ? (
@@ -127,9 +129,13 @@ export function PoultryBazarHeader({
               alt="Profile"
               className="w-full h-full rounded-full object-cover"
             />
-          ) : (
-            <div className="w-full h-full rounded-full bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-700 dark:text-emerald-400">
+          ) : isLoggedIn ? (
+            <div className="w-full h-full rounded-full bg-emerald-600 flex items-center justify-center text-white">
               <User className="w-5 h-5 stroke-[2.2]" />
+            </div>
+          ) : (
+            <div className="w-full h-full rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+              <LogIn className="w-4 h-4 stroke-[2.2]" />
             </div>
           )}
         </Button>

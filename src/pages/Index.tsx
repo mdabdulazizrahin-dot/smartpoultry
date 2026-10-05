@@ -167,8 +167,15 @@ const Index = () => {
   };
 
   const handleSignOut = async () => {
-    await signOut();
-    toast.success('লগআউট হয়েছে');
+    try {
+      await signOut();
+      setShowProfileView(false);
+      setShowSideDrawer(false);
+      toast.success('সফলভাবে লগআউট হয়েছে');
+    } catch (e) {
+      console.error('Logout error:', e);
+      toast.error('লগআউট করতে সমস্যা হয়েছে');
+    }
   };
 
   if (!system.setupComplete && (isLoading || poultryLoading)) {
@@ -219,6 +226,7 @@ const Index = () => {
           onSelectType={setActiveType}
           isLoggedIn={!!user}
           onSignOut={handleSignOut}
+          onSignIn={() => navigate('/auth')}
           userMobile={user?.email}
         />
         <AIAssistantModal
@@ -605,6 +613,7 @@ const Index = () => {
         onSelectType={setActiveType}
         isLoggedIn={!!user}
         onSignOut={handleSignOut}
+        onSignIn={() => navigate('/auth')}
         userMobile={user?.email}
       />
 
