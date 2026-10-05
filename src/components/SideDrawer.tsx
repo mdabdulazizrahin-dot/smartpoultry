@@ -165,16 +165,14 @@ export function SideDrawer({
             </div>
 
             <div className="grid grid-cols-1 gap-1.5">
-              {enabledTypes.map((typeId) => {
-                const info = POULTRY_TYPES[typeId];
-                if (!info) return null;
-                const isActive = activeType === typeId;
+              {POULTRY_TYPES.filter(t => t.id !== 'other').map((item) => {
+                const isActive = activeType === item.id;
 
                 return (
                   <button
-                    key={typeId}
+                    key={item.id}
                     onClick={() => {
-                      onSelectType(typeId);
+                      onSelectType(item.id);
                       onOpenChange(false);
                     }}
                     className={`w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-left transition-all cursor-pointer ${
@@ -184,10 +182,17 @@ export function SideDrawer({
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <span className="text-lg">{info.icon}</span>
-                      <span className="text-sm">{info.nameBengali}</span>
+                      <span className="text-xl">{item.emoji}</span>
+                      <span className="text-sm font-semibold">{item.label}</span>
                     </div>
-                    {isActive && <Check className="w-4 h-4 stroke-[2.5]" />}
+                    {isActive ? (
+                      <span className="flex items-center gap-1 text-xs bg-white/20 px-2 py-0.5 rounded-full font-bold">
+                        <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                        চালু আছে
+                      </span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">নির্বাচন করুন</span>
+                    )}
                   </button>
                 );
               })}

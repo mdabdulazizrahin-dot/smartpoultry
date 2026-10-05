@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calculator, Egg, Syringe, Store, FileText, Cloud, Loader2, Bird, Skull, LogIn, Package, TrendingUp, BarChart3, Pill, Receipt, Layers, ShieldCheck, Sparkles } from 'lucide-react';
+import { Calculator, Egg, Syringe, Store, FileText, Cloud, Loader2, Bird, Skull, LogIn, Package, TrendingUp, BarChart3, Pill, Receipt, Layers, ShieldCheck, Sparkles, Settings2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { DashboardHeader } from '@/components/DashboardHeader';
@@ -251,7 +251,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-lg mx-auto px-4 py-4 space-y-4">
-        {/* Poultry BAZAR Header matching Image 3 */}
+        {/* Poultry BAZAR Header */}
         <div className="-mx-4 -mt-4 mb-2">
           <PoultryBazarHeader
             onOpenMenu={() => setShowSideDrawer(true)}
@@ -261,34 +261,48 @@ const Index = () => {
           />
         </div>
 
+        {/* Poultry Type Quick Switcher Bar */}
+        <div className="flex items-center justify-between gap-1.5 bg-card/90 backdrop-blur-xs p-1.5 rounded-2xl border border-border/70 shadow-2xs">
+          <div className="flex items-center gap-1.5 flex-1 overflow-x-auto no-scrollbar py-0.5">
+            {POULTRY_TYPES.filter(t => t.id !== 'other').map((t) => {
+              const isActive = system.activeType === t.id;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => {
+                    setActiveType(t.id);
+                    if (!system.enabledTypes.includes(t.id)) {
+                      addPoultryType(t.id);
+                    }
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                    isActive
+                      ? 'bg-emerald-600 text-white shadow-xs scale-[1.02]'
+                      : 'bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/50'
+                  }`}
+                >
+                  <span className="text-sm leading-none">{t.emoji}</span>
+                  <span>{t.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowPoultrySettings(true)}
+            className="w-8 h-8 rounded-xl shrink-0 text-muted-foreground hover:text-foreground"
+            title="মুরগির ধরন কাস্টমাইজ"
+          >
+            <Settings2 className="w-4 h-4" />
+          </Button>
+        </div>
+
         {/* Header */}
         <DashboardHeader 
           farmName={farmData.farmName} 
           onUpdateName={handleUpdateFarmName} 
         />
-
-        {/* If user hasn't entered flock/batches yet, show a friendly Setup Banner */}
-        {!hasAnyFarmData && (
-          <div className="rounded-2xl border border-primary/25 bg-gradient-to-r from-primary/10 via-emerald-500/10 to-transparent p-3.5 flex items-center justify-between gap-3 shadow-xs">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-xl shrink-0">
-                🐔
-              </div>
-              <div className="min-w-0">
-                <h4 className="text-sm font-bold text-foreground truncate">খামার সেটআপ করুন</h4>
-                <p className="text-xs text-muted-foreground truncate">খামারের ধরন ও ব্যাচ সেটআপ করতে উইজার্ড চালু করুন</p>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              onClick={() => setShowSetupWizardModal(true)}
-              className="h-8 px-3.5 rounded-full bg-primary hover:bg-primary/90 text-xs font-semibold shrink-0 gap-1 shadow-xs cursor-pointer"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              সেটআপ করুন
-            </Button>
-          </div>
-        )}
 
         {!isLayer && (
           system.activeType === 'cock' ? (
