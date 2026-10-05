@@ -1,7 +1,26 @@
 {
+  "headers": [
+    {
+      "source": "/SmartPoultry.apk",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/vnd.android.package-archive"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "attachment; filename=\"SmartPoultry.apk\""
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!SmartPoultry\\.apk|.*\\.[\\w]+$).*)",
       "destination": "/index.html"
     }
   ]
