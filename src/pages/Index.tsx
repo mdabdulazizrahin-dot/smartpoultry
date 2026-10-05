@@ -38,14 +38,24 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
+import { PoultryBazarHeader } from '@/components/PoultryBazarHeader';
+import { ProfileView } from '@/components/ProfileView';
+import { SideDrawer } from '@/components/SideDrawer';
+import { AIAssistantModal } from '@/components/AIAssistantModal';
+import { useProfile } from '@/hooks/useProfile';
+
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const [showPoultrySettings, setShowPoultrySettings] = useState(false);
   const [showSetupWizardModal, setShowSetupWizardModal] = useState(false);
+  const [showProfileView, setShowProfileView] = useState(false);
+  const [showSideDrawer, setShowSideDrawer] = useState(false);
+  const [showAiAssistant, setShowAiAssistant] = useState(false);
   const { signOut, user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { avatarUrl } = useProfile();
 
   const {
     system,
@@ -181,6 +191,45 @@ const Index = () => {
     );
   }
 
+  if (showProfileView) {
+    return (
+      <div className="min-h-screen bg-background">
+        <ProfileView
+          onBack={() => setShowProfileView(false)}
+          onOpenMenu={() => setShowSideDrawer(true)}
+          userMobile={user?.email}
+          isLoggedIn={!!user}
+          onSignOut={handleSignOut}
+          onSignIn={() => navigate('/auth')}
+          avatarUrl={avatarUrl}
+        />
+        <SideDrawer
+          open={showSideDrawer}
+          onOpenChange={setShowSideDrawer}
+          onOpenProfile={() => setShowProfileView(true)}
+          onOpenPoultrySettings={() => setShowPoultrySettings(true)}
+          onOpenSetupWizard={() => {
+            setShowProfileView(false);
+            setShowSetupWizardModal(true);
+          }}
+          onOpenDriveBackup={() => toast.info('Google Drive ব্যাকআপ অপশন সক্রিয় রয়েছে')}
+          onOpenAiAssistant={() => setShowAiAssistant(true)}
+          enabledTypes={system.enabledTypes.length ? system.enabledTypes : ['layer']}
+          activeType={system.activeType}
+          onSelectType={setActiveType}
+          isLoggedIn={!!user}
+          onSignOut={handleSignOut}
+          userMobile={user?.email}
+        />
+        <AIAssistantModal
+          open={showAiAssistant}
+          onOpenChange={setShowAiAssistant}
+          initialMode="general"
+        />
+      </div>
+    );
+  }
+
   const isLayer = system.activeType === 'layer';
 
   const hasAnyFarmData = 
@@ -194,44 +243,14 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-lg mx-auto px-4 py-4 space-y-4">
-        {/* Header Actions */}
-        <div className="flex justify-between items-center gap-3">
-          {/* Brand & Data Safety Trust Tagline */}
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-lg shadow-xs shrink-0 select-none">
-              🐔
-            </div>
-            <div className="flex flex-col min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-sm text-foreground tracking-tight leading-tight truncate">
-                  Smart Poultry
-                </span>
-                <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 px-1.5 py-0.5 rounded-full border border-emerald-500/25 shrink-0">
-                  <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                  {t('secured')}
-                </span>
-              </div>
-              <span className="text-[11px] text-muted-foreground font-medium leading-tight truncate">
-                {t('tagline')}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 shrink-0">
-            <ProfileMenu 
-              userMobile={user?.email}
-              isLoggedIn={!!user}
-              onSignOut={handleSignOut}
-              onSignIn={() => navigate('/auth')}
-              poultry={{
-                enabledTypes: system.enabledTypes.length ? system.enabledTypes : ['layer'],
-                activeType: system.activeType,
-                onSelectType: setActiveType,
-                onOpenPoultrySettings: () => setShowPoultrySettings(true),
-                onOpenSetupWizard: () => setShowSetupWizardModal(true),
-              }}
-            />
-          </div>
+        {/* Poultry BAZAR Header matching Image 3 */}
+        <div className="-mx-4 -mt-4 mb-2">
+          <PoultryBazarHeader
+            onOpenMenu={() => setShowSideDrawer(true)}
+            onOpenProfile={() => setShowProfileView(true)}
+            avatarUrl={avatarUrl}
+            isLoggedIn={!!user}
+          />
         </div>
 
         {/* Header */}
@@ -571,6 +590,28 @@ const Index = () => {
         enabledTypes={system.enabledTypes.length ? system.enabledTypes : ['layer']}
         onAdd={addPoultryType}
         onRemove={removePoultryType}
+      />
+
+      <SideDrawer
+        open={showSideDrawer}
+        onOpenChange={setShowSideDrawer}
+        onOpenProfile={() => setShowProfileView(true)}
+        onOpenPoultrySettings={() => setShowPoultrySettings(true)}
+        onOpenSetupWizard={() => setShowSetupWizardModal(true)}
+        onOpenDriveBackup={() => toast.info('Google Drive ব্যাকআপ অপশন সক্রিয় রয়েছে')}
+        onOpenAiAssistant={() => setShowAiAssistant(true)}
+        enabledTypes={system.enabledTypes.length ? system.enabledTypes : ['layer']}
+        activeType={system.activeType}
+        onSelectType={setActiveType}
+        isLoggedIn={!!user}
+        onSignOut={handleSignOut}
+        userMobile={user?.email}
+      />
+
+      <AIAssistantModal
+        open={showAiAssistant}
+        onOpenChange={setShowAiAssistant}
+        initialMode="general"
       />
     </div>
   );
