@@ -15,6 +15,7 @@ dist-ssr
 
 # Mobile & Android builds
 *.apk
+!public/SmartPoultry.apk
 *.aab
 .gradle/
 android/.gradle/

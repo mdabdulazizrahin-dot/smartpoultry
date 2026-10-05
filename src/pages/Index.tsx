@@ -42,6 +42,7 @@ import { PoultryBazarHeader } from '@/components/PoultryBazarHeader';
 import { ProfileView } from '@/components/ProfileView';
 import { SideDrawer } from '@/components/SideDrawer';
 import { AIAssistantModal } from '@/components/AIAssistantModal';
+import { ApkDownloadBanner } from '@/components/ApkDownloadBanner';
 import { useProfile } from '@/hooks/useProfile';
 
 const Index = () => {
@@ -260,6 +261,9 @@ const Index = () => {
             isLoggedIn={!!user}
           />
         </div>
+
+        {/* Android APK Download Notice Banner for Web Users */}
+        <ApkDownloadBanner />
 
         {/* Header */}
         <DashboardHeader 

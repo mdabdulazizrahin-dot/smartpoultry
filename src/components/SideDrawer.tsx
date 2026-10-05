@@ -14,6 +14,8 @@ import {
   ChevronRight,
   Check,
   ShieldCheck,
+  Smartphone,
+  Download,
 } from 'lucide-react';
 import {
   Sheet,
@@ -249,6 +251,22 @@ export function SideDrawer({
               <Bot className="w-4 h-4 text-emerald-500" />
               <span className="text-sm font-medium">স্মার্ট এআই সহকারী</span>
             </Button>
+
+            <a
+              href="/SmartPoultry.apk"
+              download="SmartPoultry.apk"
+              onClick={() => onOpenChange(false)}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-900 dark:text-emerald-200 transition-colors cursor-pointer mt-1"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Smartphone className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <div className="flex flex-col text-left min-w-0">
+                  <span className="text-xs font-bold text-foreground">অ্যাপ ডাউনলোড (APK)</span>
+                  <span className="text-[10px] text-muted-foreground">৮.৪২ MB • সরাসরি ইনস্টল করুন</span>
+                </div>
+              </div>
+              <Download className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            </a>
           </div>
 
           {/* App Preferences */}

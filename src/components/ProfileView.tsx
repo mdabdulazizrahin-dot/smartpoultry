@@ -17,6 +17,7 @@ import {
   User,
   Check,
   AlertCircle,
+  Download,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -392,6 +393,24 @@ export function ProfileView({
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </div>
           </button>
+
+          {/* অ্যান্ড্রয়েড অ্যাপ ডাউনলোড */}
+          <a
+            href="/SmartPoultry.apk"
+            download="SmartPoultry.apk"
+            className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-3.5 text-foreground">
+              <Smartphone className="w-5 h-5 text-emerald-600 dark:text-emerald-400 stroke-[1.8]" />
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold">অ্যান্ড্রয়েড অ্যাপ ডাউনলোড (APK)</span>
+                <span className="text-xs text-muted-foreground font-mono">৮.৪২ MB • সরাসরি ইনস্টল করুন</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+              <Download className="w-4 h-4" />
+            </div>
+          </a>
 
           {/* পাসওয়ার্ড পরিবর্তন করুন (if logged in) */}
           {isLoggedIn && (
