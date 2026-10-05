@@ -261,43 +261,6 @@ const Index = () => {
           />
         </div>
 
-        {/* Poultry Type Quick Switcher Bar */}
-        <div className="flex items-center justify-between gap-1.5 bg-card/90 backdrop-blur-xs p-1.5 rounded-2xl border border-border/70 shadow-2xs">
-          <div className="flex items-center gap-1.5 flex-1 overflow-x-auto no-scrollbar py-0.5">
-            {POULTRY_TYPES.filter(t => t.id !== 'other').map((t) => {
-              const isActive = system.activeType === t.id;
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => {
-                    setActiveType(t.id);
-                    if (!system.enabledTypes.includes(t.id)) {
-                      addPoultryType(t.id);
-                    }
-                  }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
-                    isActive
-                      ? 'bg-emerald-600 text-white shadow-xs scale-[1.02]'
-                      : 'bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/50'
-                  }`}
-                >
-                  <span className="text-sm leading-none">{t.emoji}</span>
-                  <span>{t.label}</span>
-                </button>
-              );
-            })}
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowPoultrySettings(true)}
-            className="w-8 h-8 rounded-xl shrink-0 text-muted-foreground hover:text-foreground"
-            title="মুরগির ধরন কাস্টমাইজ"
-          >
-            <Settings2 className="w-4 h-4" />
-          </Button>
-        </div>
-
         {/* Header */}
         <DashboardHeader 
           farmName={farmData.farmName} 

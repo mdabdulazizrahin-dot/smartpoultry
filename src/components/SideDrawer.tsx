@@ -21,6 +21,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -144,8 +151,8 @@ export function SideDrawer({
             </div>
           )}
 
-          {/* Active Poultry Type Switcher */}
-          <div className="space-y-2">
+          {/* Active Poultry Type Switcher - Dropdown */}
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 খামারের ধরন নির্বাচন
@@ -164,39 +171,41 @@ export function SideDrawer({
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 gap-1.5">
-              {POULTRY_TYPES.filter(t => t.id !== 'other').map((item) => {
-                const isActive = activeType === item.id;
-
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      onSelectType(item.id);
-                      onOpenChange(false);
-                    }}
-                    className={`w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-left transition-all cursor-pointer ${
-                      isActive
-                        ? 'bg-emerald-600 text-white font-semibold shadow-xs'
-                        : 'bg-muted/40 hover:bg-muted text-foreground border border-border/60'
-                    }`}
+            <Select
+              value={activeType}
+              onValueChange={(val) => {
+                onSelectType(val as PoultryTypeId);
+                onOpenChange(false);
+              }}
+            >
+              <SelectTrigger className="w-full h-12 rounded-xl bg-muted/40 hover:bg-muted/60 border border-border/70 px-3 flex items-center justify-between text-left cursor-pointer transition-colors shadow-2xs">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="text-2xl shrink-0 select-none">
+                    {POULTRY_TYPES.find(t => t.id === activeType)?.emoji || '🐔'}
+                  </span>
+                  <div className="flex flex-col min-w-0 text-left">
+                    <span className="text-[10px] text-muted-foreground font-semibold leading-tight">
+                      বর্তমান সক্রিয় খামার
+                    </span>
+                    <span className="text-sm font-bold text-foreground truncate leading-tight">
+                      {POULTRY_TYPES.find(t => t.id === activeType)?.label || 'লেয়ার'}
+                    </span>
+                  </div>
+                </div>
+              </SelectTrigger>
+              <SelectContent className="bg-popover border border-border shadow-xl rounded-xl z-50 p-1">
+                {POULTRY_TYPES.filter(t => t.id !== 'other').map((item) => (
+                  <SelectItem 
+                    key={item.id} 
+                    value={item.id} 
+                    className="cursor-pointer py-2.5 rounded-lg flex items-center gap-2.5 my-0.5 font-semibold text-sm"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-xl">{item.emoji}</span>
-                      <span className="text-sm font-semibold">{item.label}</span>
-                    </div>
-                    {isActive ? (
-                      <span className="flex items-center gap-1 text-xs bg-white/20 px-2 py-0.5 rounded-full font-bold">
-                        <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                        চালু আছে
-                      </span>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">নির্বাচন করুন</span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+                    <span className="text-xl shrink-0 mr-1.5">{item.emoji}</span>
+                    <span>{item.label}</span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Farm Setup & Tools */}
