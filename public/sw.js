@@ -1,4 +1,4 @@
-const CACHE_NAME = 'poultry-farm-v3';
+const CACHE_NAME = 'poultry-farm-v4';
 
 // Install - activate immediately, no pre-caching of hashed build assets
 self.addEventListener('install', (event) => {
