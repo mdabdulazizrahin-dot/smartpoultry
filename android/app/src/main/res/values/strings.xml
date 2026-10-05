@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Smart Poultry</string>
+    <string name="title_activity_main">Smart Poultry</string>
+    <string name="package_name">com.smartpoultry.app</string>
+    <string name="custom_url_scheme">com.smartpoultry.app</string>
+</resources>

@@ -1,0 +1,216 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 120 20% 98%;
+    --foreground: 142 40% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 142 40% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 142 40% 10%;
+
+    --primary: 142 70% 35%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 142 30% 92%;
+    --secondary-foreground: 142 50% 20%;
+
+    --muted: 120 15% 95%;
+    --muted-foreground: 142 20% 40%;
+
+    --accent: 45 90% 55%;
+    --accent-foreground: 45 90% 15%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 70% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 92% 15%;
+
+    --border: 142 20% 88%;
+    --input: 142 20% 88%;
+    --ring: 142 70% 35%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 142 30% 96%;
+    --sidebar-foreground: 142 40% 20%;
+    --sidebar-primary: 142 70% 35%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 142 25% 90%;
+    --sidebar-accent-foreground: 142 50% 20%;
+    --sidebar-border: 142 20% 88%;
+    --sidebar-ring: 142 70% 35%;
+
+    --gradient-farm: linear-gradient(135deg, hsl(142, 70%, 35%) 0%, hsl(142, 60%, 45%) 100%);
+    --gradient-income: linear-gradient(135deg, hsl(142, 70%, 40%) 0%, hsl(160, 60%, 50%) 100%);
+    --gradient-expense: linear-gradient(135deg, hsl(0, 70%, 55%) 0%, hsl(15, 80%, 60%) 100%);
+    --gradient-profit: linear-gradient(135deg, hsl(142, 70%, 35%) 0%, hsl(180, 50%, 40%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(120, 20%, 98%) 100%);
+
+    --shadow-sm: 0 1px 2px 0 hsl(142 20% 20% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(142 20% 20% / 0.1), 0 2px 4px -2px hsl(142 20% 20% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(142 20% 20% / 0.1), 0 4px 6px -4px hsl(142 20% 20% / 0.1);
+    --shadow-card: 0 4px 20px -2px hsl(142 30% 30% / 0.12);
+  }
+
+  .dark {
+    --background: 142 30% 8%;
+    --foreground: 120 20% 95%;
+
+    --card: 142 25% 12%;
+    --card-foreground: 120 20% 95%;
+
+    --popover: 142 25% 12%;
+    --popover-foreground: 120 20% 95%;
+
+    --primary: 142 60% 50%;
+    --primary-foreground: 142 50% 10%;
+
+    --secondary: 142 20% 20%;
+    --secondary-foreground: 120 20% 90%;
+
+    --muted: 142 20% 18%;
+    --muted-foreground: 142 15% 60%;
+
+    --accent: 45 80% 50%;
+    --accent-foreground: 45 90% 10%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 60% 50%;
+    --success-foreground: 142 50% 10%;
+
+    --warning: 38 85% 50%;
+    --warning-foreground: 38 90% 10%;
+
+    --border: 142 20% 20%;
+    --input: 142 20% 20%;
+    --ring: 142 60% 50%;
+
+    --sidebar-background: 142 25% 10%;
+    --sidebar-foreground: 120 20% 90%;
+    --sidebar-primary: 142 60% 50%;
+    --sidebar-primary-foreground: 142 50% 10%;
+    --sidebar-accent: 142 20% 18%;
+    --sidebar-accent-foreground: 120 20% 90%;
+    --sidebar-border: 142 20% 20%;
+    --sidebar-ring: 142 60% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+    letter-spacing: 0;
+  }
+
+  body,
+  button,
+  input,
+  select,
+  textarea {
+    font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  }
+}
+
+/* Force the whole app to use one clear Bengali digit font, even where Tailwind utilities
+   like font-mono/tabular-nums would otherwise replace the glyph for ১. */
+.font-number,
+.tabular-nums,
+.font-mono,
+input[type="number"],
+input[type="tel"],
+[inputmode="numeric"],
+[inputmode="decimal"] {
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+/* 3D Icon Styles */
+@layer components {
+  .icon-3d {
+    filter: drop-shadow(2px 2px 3px hsl(var(--foreground) / 0.3));
+    transform-style: preserve-3d;
+    transition: all 0.2s ease;
+  }
+
+  .icon-3d:hover {
+    filter: drop-shadow(3px 3px 5px hsl(var(--foreground) / 0.4));
+    transform: translateY(-1px);
+  }
+
+  .icon-3d-container {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.2) 0%, hsl(var(--primary) / 0.1) 100%);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 
+      0 4px 6px -1px hsl(var(--primary) / 0.15),
+      0 2px 4px -2px hsl(var(--primary) / 0.1),
+      inset 0 1px 0 hsl(var(--primary-foreground) / 0.1);
+  }
+
+  .tab-icon-3d {
+    background: linear-gradient(145deg, hsl(var(--secondary)) 0%, hsl(var(--muted)) 100%);
+    padding: 6px;
+    border-radius: 10px;
+    box-shadow: 
+      2px 2px 4px hsl(var(--foreground) / 0.1),
+      -1px -1px 3px hsl(var(--background)),
+      inset 0 1px 0 hsl(var(--background) / 0.5);
+    transition: all 0.2s ease;
+  }
+
+  .tab-icon-3d:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      3px 3px 6px hsl(var(--foreground) / 0.15),
+      -1px -1px 3px hsl(var(--background)),
+      inset 0 1px 0 hsl(var(--background) / 0.5);
+  }
+
+  [data-state="active"] .tab-icon-3d {
+    background: linear-gradient(145deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%);
+    box-shadow: 
+      2px 2px 4px hsl(var(--primary) / 0.3),
+      -1px -1px 3px hsl(var(--primary-foreground) / 0.1),
+      inset 0 1px 0 hsl(var(--primary-foreground) / 0.2);
+  }
+
+  .header-icon-3d {
+    background: linear-gradient(145deg, hsl(var(--primary-foreground) / 0.3) 0%, hsl(var(--primary-foreground) / 0.15) 100%);
+    padding: 12px;
+    border-radius: 16px;
+    box-shadow: 
+      3px 3px 6px hsl(var(--foreground) / 0.15),
+      -2px -2px 4px hsl(var(--primary-foreground) / 0.1),
+      inset 0 2px 0 hsl(var(--primary-foreground) / 0.2);
+  }
+
+  .card-icon-3d {
+    background: linear-gradient(145deg, hsl(var(--primary-foreground) / 0.25) 0%, hsl(var(--primary-foreground) / 0.1) 100%);
+    padding: 10px;
+    border-radius: 14px;
+    box-shadow: 
+      2px 2px 5px hsl(var(--foreground) / 0.1),
+      inset 0 1px 0 hsl(var(--primary-foreground) / 0.3);
+  }
+}

@@ -1,0 +1,1 @@
+ALTER TABLE public.farm_data ADD COLUMN IF NOT EXISTS poultry_system jsonb DEFAULT '{}'::jsonb;
